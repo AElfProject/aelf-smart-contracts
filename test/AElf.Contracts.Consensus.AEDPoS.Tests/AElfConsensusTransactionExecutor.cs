@@ -13,18 +13,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AElf.Contracts.Consensus.AEDPoS
 {
-    public class ElectionTransactionExecutor : ITransactionExecutor
+    public class AElfConsensusTransactionExecutor : ITransactionExecutor
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public ElectionTransactionExecutor(IServiceProvider serviceProvider)
+        public AElfConsensusTransactionExecutor(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
         public async Task ExecuteAsync(Transaction transaction)
         {
-            var blockTimeProvider = _serviceProvider.GetRequiredService<IBlockTimeProvider>();
             var txHub = _serviceProvider.GetRequiredService<ITxHub>();
             await txHub.HandleTransactionsReceivedAsync(new TransactionsReceivedEvent
             {
@@ -36,7 +35,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
             var blockAttachService = _serviceProvider.GetRequiredService<IBlockAttachService>();
 
             var block = await minerService.MineAsync(preBlock.GetHash(), preBlock.Height,
-                blockTimeProvider.GetBlockTime(), TimeSpan.FromMilliseconds(int.MaxValue));
+                DateTime.UtcNow, TimeSpan.FromMilliseconds(int.MaxValue));
 
             await blockAttachService.AttachBlockAsync(block);
         }

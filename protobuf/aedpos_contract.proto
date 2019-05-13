@@ -6,10 +6,10 @@ import "core.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option csharp_namespace = "AElf.Contracts.Consensus.AElfConsensus";
+option csharp_namespace = "AElf.Contracts.Consensus.AEDPoS";
 
-service AElfConsensusContract {
-    option (aelf.csharp_state) = "AElf.Contracts.Consensus.AElfConsensus.AElfConsensusContractState";
+service AEDPoSContract {
+    option (aelf.csharp_state) = "AElf.Contracts.Consensus.AEDPoS.AEDPoSContractState";
     // Actions
     // -> Process
     rpc InitialAElfConsensusContract (InitialAElfConsensusContractInput) returns (google.protobuf.Empty) {
@@ -79,7 +79,6 @@ message InitialAElfConsensusContractInput {
     Hash election_contract_system_name = 1;
     bool is_term_stay_one = 2;
     bool is_side_chain = 3;
-    Hash miners_count_provider_contract_system_name = 4;
     Hash token_contract_system_name = 5;
     Hash vote_contract_system_name = 6;
     sint32 time_each_term = 7;

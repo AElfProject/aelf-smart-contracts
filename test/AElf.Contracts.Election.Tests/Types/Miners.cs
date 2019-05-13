@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Google.Protobuf.WellKnownTypes;
 
-namespace AElf.Contracts.Consensus.AElfConsensus
+namespace AElf.Contracts.Consensus.AEDPoS
 {
     internal partial class Miners
     {
