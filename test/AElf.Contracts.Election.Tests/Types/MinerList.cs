@@ -1,25 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AElf.Contracts.Consensus.DPoS;
+using System.Runtime.CompilerServices;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
-namespace AElf.Contracts.TestBase
+namespace AElf.Contracts.Consensus.AEDPoS
 {
-    internal static class BasicExtensions
+    internal partial class MinerList
     {
-        public static Round GenerateFirstRoundOfNewTerm(this Miners miners, int miningInterval,
+        public Round GenerateFirstRoundOfNewTerm(int miningInterval,
             DateTime currentBlockTime, long currentRoundNumber = 0, long currentTermNumber = 0)
         {
-            var dict = new Dictionary<string, int>();
-
-            foreach (var miner in miners.PublicKeys)
-            {
-                dict.Add(miner, miner[0]);
-            }
-
             var sortedMiners =
-                (from obj in dict
+                (from obj in PublicKeys.Distinct()
+                        .ToDictionary<ByteString, string, int>(miner => miner.ToHex(), miner => miner[0])
                     orderby obj.Value descending
                     select obj.Key).ToList();
 
@@ -52,19 +47,10 @@ namespace AElf.Contracts.TestBase
             return round;
         }
 
-        public static long GetMinedBlocks(this Round round)
+        public Hash GetMinersHash()
         {
-            return round.RealTimeMinersInformation.Values.Sum(minerInRound => minerInRound.ProducedBlocks);
+            var orderedMiners = PublicKeys.OrderBy(p => p);
+            return Hash.FromString(orderedMiners.Aggregate("", (current, publicKey) => current + publicKey));
         }
-        public static Miners ToMiners(this List<string> minerPublicKeys, long termNumber = 0)
-        {
-            return new Miners
-            {
-                PublicKeys = {minerPublicKeys},
-                Addresses = {minerPublicKeys.Select(p => Address.FromPublicKey(ByteArrayHelpers.FromHexString(p)))},
-                TermNumber = termNumber
-            };
-        }
-
     }
 }
