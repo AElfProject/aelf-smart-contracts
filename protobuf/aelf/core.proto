@@ -1,9 +1,10 @@
 syntax = "proto3";
 
-option csharp_namespace = "AElf.Kernel";
+package aelf;
+
+option csharp_namespace = "AElf.Types";
 
 import "google/protobuf/timestamp.proto";
-import "common.proto";
 
 message Transaction {
     Address From = 1;
@@ -64,9 +65,9 @@ message ScopedStatePath {
 //    StateValue StateValue = 2;
 //}
 
-message TransactionList {
-    repeated Transaction Transactions = 1;
-}
+//message TransactionList {
+//    repeated Transaction Transactions = 1;
+//}
 
 enum TransactionResultStatus {
     NotExisted = 0;
@@ -200,23 +201,23 @@ message SmartContractRegistration {
 //    int32 LeafCount = 3;
 //}
 
-message MerklePath {
-    repeated Hash Path = 1;
-}
+//message MerklePath {
+//    repeated Hash Path = 1;
+//}
 
-message StringList {
-    repeated string Values = 1;
-    string Remark = 2;
-}
+//message StringList {
+//    repeated string Values = 1;
+//    string Remark = 2;
+//}
 
 message HashList {
     repeated Hash Values = 1;
 }
 
-message LongList {
-    repeated int64 Values = 1;
-    string Remark = 2;
-}
+//message LongList {
+//    repeated int64 Values = 1;
+//    string Remark = 2;
+//}
 //
 //message BlockAbstract {
 //    string MinerPublicKey = 1;
@@ -325,63 +326,86 @@ message ActionResult {
 
 // Contracts
 
-message ContractInfo
-{
-    uint64 SerialNumber=1;
-    Address Owner = 2;
-    int32 Category = 3;
-    Hash CodeHash = 4;
-}
-
-message ContractDeploymentInput {
-    sint32 category = 1;
-    bytes code = 2;
-}
-
-message SystemContractDeploymentInput {
-    message SystemTransactionMethodCall {
-        string MethodName = 1;
-        bytes Params = 2;
-    }
-    message SystemTransactionMethodCallList {
-        repeated SystemTransactionMethodCall Value = 1;
-    }
-    sint32 category = 1;
-    bytes code = 2;
-    Hash name = 3;
-    SystemTransactionMethodCallList transactionMethodCallList = 4;
-}
-
-message ContractUpdateInput {
-    Address address = 1;
-    bytes code = 2;
-}
-
-message ChangeContractOwnerInput {
-    Address contractAddress = 1;
-    Address newOwner = 2;
-}
-
-message ContractZeroInitializationInput{
-    Hash zeroOwnerAddressGenerationContractHashName = 1;
-    string zeroOwnerAddressGenerationMethodName = 2;
-    bool contractDeploymentAuthorityRequired = 3;
-}
+//message ContractInfo
+//{
+//    uint64 SerialNumber=1;
+//    Address Owner = 2;
+//    int32 Category = 3;
+//    Hash CodeHash = 4;
+//}
+//
+//message ContractDeploymentInput {
+//    sint32 category = 1;
+//    bytes code = 2;
+//}
+//
+//message SystemContractDeploymentInput {
+//    message SystemTransactionMethodCall {
+//        string MethodName = 1;
+//        bytes Params = 2;
+//    }
+//    message SystemTransactionMethodCallList {
+//        repeated SystemTransactionMethodCall Value = 1;
+//    }
+//    sint32 category = 1;
+//    bytes code = 2;
+//    Hash name = 3;
+//    SystemTransactionMethodCallList transactionMethodCallList = 4;
+//}
+//
+//message ContractUpdateInput {
+//    Address address = 1;
+//    bytes code = 2;
+//}
+//
+//message ChangeContractOwnerInput {
+//    Address contractAddress = 1;
+//    Address newOwner = 2;
+//}
 
 // Consensus
 
-message ConsensusCommand {
-    int32 NextBlockMiningLeftMilliseconds = 1;// How many milliseconds left to trigger the mining of next block.
-    int32 LimitMillisecondsOfMiningBlock = 2;// Time limit of mining next block.
-    bytes Hint = 3;// Context of Hint is diverse according to the consensus protocol we choose, so we use bytes.
-    google.protobuf.Timestamp ExpectedMiningTime = 4;
+// message ConsensusCommand {
+//     int32 NextBlockMiningLeftMilliseconds = 1;// How many milliseconds left to trigger the mining of next block.
+//     int32 LimitMillisecondsOfMiningBlock = 2;// Time limit of mining next block.
+//     bytes Hint = 3;// Context of Hint is diverse according to the consensus protocol we choose, so we use bytes.
+//     google.protobuf.Timestamp ExpectedMiningTime = 4;
+// }
+
+// message ValidationResult {
+//     bool Success = 1;
+//     string Message = 2;
+// }
+
+// message ConsensusInformation {
+//     bytes Bytes = 1;
+// }
+
+// Common
+
+message Address
+{
+    bytes Value = 1;
 }
 
-message ValidationResult {
-    bool Success = 1;
-    string Message = 2;
+message Hash
+{
+    bytes Value = 1;
 }
 
-message ConsensusInformation {
-    bytes Bytes = 1;
+message SInt32Value
+{
+    sint32 Value = 1;
+}
+
+message SInt64Value
+{
+    sint64 Value = 1;
+}
+
+enum TimeUnit {
+    Days = 0;
+    Months = 1;
+    Minutes = 2;
+    Hours = 3;
 }
