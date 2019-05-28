@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Acs4;
-using AElf.Kernel;
-using AElf.Runtime.CSharp.Validators;
 using AElf.Types;
 using AElf.Sdk.CSharp;
 using Google.Protobuf;
@@ -12,10 +9,54 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Consensus.AEDPoS
 {
-    internal partial class Round
+    public partial class Round
     {
         public long RoundId =>
             RealTimeMinersInformation.Values.Select(bpInfo => bpInfo.ExpectedMiningTime.Seconds).Sum();
+
+        public bool IsEmpty => RoundId == 0;
+
+        /// <summary>
+        /// Check the equality of time slots of miners.
+        /// Also, the mining interval shouldn't be 0.
+        /// </summary>
+        /// <returns></returns>
+        public ValidationResult CheckTimeSlots()
+        {
+            var miners = RealTimeMinersInformation.Values.OrderBy(m => m.Order).ToList();
+            if (miners.Count == 1)
+            {
+                // No need to check single node.
+                return new ValidationResult {Success = true};
+            }
+
+            if (miners.Any(m => m.ExpectedMiningTime == null))
+            {
+                return new ValidationResult {Success = false, Message = "Incorrect expected mining time."};
+            }
+
+            var baseMiningInterval =
+                (miners[1].ExpectedMiningTime.ToDateTime() - miners[0].ExpectedMiningTime.ToDateTime())
+                .TotalMilliseconds;
+
+            if (baseMiningInterval <= 0)
+            {
+                return new ValidationResult {Success = false, Message = $"Mining interval must greater than 0.\n{this}"};
+            }
+
+            for (var i = 1; i < miners.Count - 1; i++)
+            {
+                var miningInterval =
+                    (miners[i + 1].ExpectedMiningTime.ToDateTime() - miners[i].ExpectedMiningTime.ToDateTime())
+                    .TotalMilliseconds;
+                if (Math.Abs(miningInterval - baseMiningInterval) > baseMiningInterval)
+                {
+                    return new ValidationResult {Success = false, Message = "Time slots are so different."};
+                }
+            }
+
+            return new ValidationResult {Success = true};
+        }
 
         public Hash GetHash(bool isContainPreviousInValue = true)
         {
@@ -43,14 +84,29 @@ namespace AElf.Contracts.Consensus.AEDPoS
             return distance > 0 ? distance : -distance;
         }
 
-        internal bool IsTimeSlotPassed(string publicKey, DateTime dateTime,
+        public bool IsTimeSlotPassed(string publicKey, DateTime currentBlockTime,
             out MinerInRound minerInRound)
         {
             minerInRound = null;
             var miningInterval = GetMiningInterval();
             if (!RealTimeMinersInformation.ContainsKey(publicKey)) return false;
             minerInRound = RealTimeMinersInformation[publicKey];
-            return minerInRound.ExpectedMiningTime.ToDateTime().AddMilliseconds(miningInterval) <= dateTime;
+            if (RoundNumber == 1)
+            {
+                var actualStartTimes =
+                    RealTimeMinersInformation.Values.First(m => m.Order == 1).ActualMiningTimes;
+                if (actualStartTimes.Count == 0)
+                {
+                    return false;
+                }
+
+                var actualStartTime = actualStartTimes.First();
+                var runningTime = currentBlockTime.ToTimestamp() - actualStartTime;
+                var expectedOrder = runningTime.Seconds.Div(miningInterval.Div(1000)).Add(1);
+                return minerInRound.Order < expectedOrder;
+            }
+            return minerInRound.ExpectedMiningTime + new Duration {Seconds = miningInterval.Div(1000)} <
+                   currentBlockTime.ToTimestamp();
         }
 
         /// <summary>
@@ -189,7 +245,6 @@ namespace AElf.Contracts.Consensus.AEDPoS
         /// This method for now is able to handle the situation of a miner keeping offline so many rounds,
         /// by using missedRoundsCount.
         /// </summary>
-        /// <param name="round"></param>
         /// <param name="miningInterval"></param>
         /// <param name="missedRoundsCount"></param>
         /// <returns></returns>
@@ -271,7 +326,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
                 PreviousInValue = minerInRound.PreviousInValue ?? Hash.Empty,
                 RoundId = RoundId,
                 ProducedBlocks = minerInRound.ProducedBlocks,
-                ActualMiningTime = minerInRound.ActualMiningTimes.First(),
+                ActualMiningTime = minerInRound.ActualMiningTimes.Last(),
                 SupposedOrderOfNextRound = minerInRound.SupposedOrderOfNextRound,
                 TuneOrderInformation = {tuneOrderInformation},
                 EncryptedInValues = {minerInRound.EncryptedInValues},
