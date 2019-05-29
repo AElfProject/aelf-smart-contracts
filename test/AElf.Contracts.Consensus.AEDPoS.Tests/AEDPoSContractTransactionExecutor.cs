@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using AElf.Contracts.TestKit;
 using AElf.Kernel;
@@ -15,12 +16,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AElf.Contracts.Consensus.AEDPoS
 {
-    public class AElfConsensusTransactionExecutor : ITransactionExecutor
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public class AEDPoSContractTransactionExecutor : ITransactionExecutor
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IBlockchainService _blockchainService;
 
-        public AElfConsensusTransactionExecutor(IServiceProvider serviceProvider, IBlockchainService blockchainService)
+        public AEDPoSContractTransactionExecutor(IServiceProvider serviceProvider, IBlockchainService blockchainService)
         {
             _serviceProvider = serviceProvider;
             _blockchainService = blockchainService;
@@ -37,9 +39,10 @@ namespace AElf.Contracts.Consensus.AEDPoS
             var preBlock = await blockchainService.GetBestChainLastBlockHeaderAsync();
             var minerService = _serviceProvider.GetRequiredService<IMinerService>();
             var blockAttachService = _serviceProvider.GetRequiredService<IBlockAttachService>();
+            var blockTimeProvider = _serviceProvider.GetRequiredService<IBlockTimeProvider>();
 
             var block = await minerService.MineAsync(preBlock.GetHash(), preBlock.Height,
-                DateTime.UtcNow.ToTimestamp(), TimeSpan.FromMilliseconds(int.MaxValue));
+                blockTimeProvider.GetBlockTime().ToTimestamp(), TimeSpan.FromMilliseconds(int.MaxValue));
 
             await _blockchainService.AddBlockAsync(block);
             await blockAttachService.AttachBlockAsync(block);
