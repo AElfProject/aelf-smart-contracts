@@ -1,7 +1,6 @@
 using System.Linq;
 using AElf.Contracts.Election;
 using AElf.Sdk.CSharp;
-using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Consensus.AEDPoS
@@ -46,7 +45,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
             // Update miners list.
             var miners = new MinerList();
             miners.PublicKeys.AddRange(input.RealTimeMinersInformation.Keys.Select(k => k.ToByteString()));
-            Assert(SetMinerListOfCurrentTerm(miners), "Failed to update miners list.");
+            Assert(SetMinerListOfCurrentTerm(miners), "Failed to update miner list.");
 
             // Update term number lookup. (Using term number to get first round number of related term.)
             State.FirstRoundNumberOfEachTerm[input.TermNumber] = input.RoundNumber;
@@ -99,18 +98,17 @@ namespace AElf.Contracts.Consensus.AEDPoS
         /// </summary>
         private void CountMissedTimeSlots()
         {
-            if (TryToGetCurrentRoundInformation(out var currentRound))
-            {
-                foreach (var minerInRound in currentRound.RealTimeMinersInformation)
-                {
-                    if (minerInRound.Value.OutValue == null)
-                    {
-                        minerInRound.Value.MissedTimeSlots = minerInRound.Value.MissedTimeSlots.Add(1);
-                    }
-                }
+            if (!TryToGetCurrentRoundInformation(out var currentRound)) return;
 
-                TryToUpdateRoundInformation(currentRound);
+            foreach (var minerInRound in currentRound.RealTimeMinersInformation)
+            {
+                if (minerInRound.Value.OutValue == null)
+                {
+                    minerInRound.Value.MissedTimeSlots = minerInRound.Value.MissedTimeSlots.Add(1);
+                }
             }
+
+            TryToUpdateRoundInformation(currentRound);
         }
 
         private bool TryToUpdateTermNumber(long termNumber)
