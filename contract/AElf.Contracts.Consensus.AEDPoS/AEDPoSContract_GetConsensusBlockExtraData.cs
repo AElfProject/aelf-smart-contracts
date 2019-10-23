@@ -6,6 +6,7 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Consensus.AEDPoS
 {
+    // ReSharper disable once InconsistentNaming
     public partial class AEDPoSContract
     {
         private BytesValue GetConsensusBlockExtraData(BytesValue input, bool withSecretSharingInformation = false)
@@ -21,30 +22,30 @@ namespace AElf.Contracts.Consensus.AEDPoS
             }
 
             var publicKeyBytes = triggerInformation.Pubkey;
-            var publicKey = publicKeyBytes.ToHex();
+            var pubkey = publicKeyBytes.ToHex();
 
-            LogIfPreviousMinerHasNotProduceEnoughTinyBlocks(currentRound, publicKey);
+            LogIfPreviousMinerHasNotProduceEnoughTinyBlocks(currentRound, pubkey);
 
             var information = new AElfConsensusHeaderInformation();
             switch (triggerInformation.Behaviour)
             {
-                case AElfConsensusBehaviour.UpdateValueWithoutPreviousInValue:
                 case AElfConsensusBehaviour.UpdateValue:
-                    information = GetInformationToUpdateConsensusToPublishOutValue(currentRound, publicKey,
+                    information = GetConsensusExtraDataToPublishOutValue(currentRound, pubkey,
                         triggerInformation);
                     break;
+
                 case AElfConsensusBehaviour.TinyBlock:
-                    information = GetInformationToUpdateConsensusForTinyBlock(currentRound, publicKey,
+                    information = GetConsensusExtraDataForTinyBlock(currentRound, pubkey,
                         triggerInformation);
                     break;
 
                 case AElfConsensusBehaviour.NextRound:
-                    information = GetInformationToUpdateConsensusForNextRound(currentRound, publicKey,
+                    information = GetConsensusExtraDataForNextRound(currentRound, pubkey,
                         triggerInformation);
                     break;
 
                 case AElfConsensusBehaviour.NextTerm:
-                    information = GetInformationToUpdateConsensusForNextTerm(publicKey, triggerInformation);
+                    information = GetConsensusExtraDataForNextTerm(pubkey, triggerInformation);
                     break;
             }
 
@@ -56,7 +57,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
             return information.ToBytesValue();
         }
 
-        private AElfConsensusHeaderInformation GetInformationToUpdateConsensusToPublishOutValue(Round currentRound,
+        private AElfConsensusHeaderInformation GetConsensusExtraDataToPublishOutValue(Round currentRound,
             string publicKey, AElfConsensusTriggerInformation triggerInformation)
         {
             currentRound.RealTimeMinersInformation[publicKey].ProducedTinyBlocks = currentRound
@@ -108,7 +109,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
             };
         }
 
-        private AElfConsensusHeaderInformation GetInformationToUpdateConsensusForTinyBlock(Round currentRound,
+        private AElfConsensusHeaderInformation GetConsensusExtraDataForTinyBlock(Round currentRound,
             string publicKey, AElfConsensusTriggerInformation triggerInformation)
         {
             currentRound.RealTimeMinersInformation[publicKey].ProducedTinyBlocks = currentRound
@@ -126,7 +127,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
             };
         }
 
-        private AElfConsensusHeaderInformation GetInformationToUpdateConsensusForNextRound(Round currentRound,
+        private AElfConsensusHeaderInformation GetConsensusExtraDataForNextRound(Round currentRound,
             string publicKey, AElfConsensusTriggerInformation triggerInformation)
         {
             if (!GenerateNextRoundInformation(currentRound, Context.CurrentBlockTime, out var nextRound))
@@ -145,7 +146,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
             }
 
             RevealSharedInValues(currentRound, publicKey);
-            
+
             nextRound.RealTimeMinersInformation[publicKey].ProducedBlocks =
                 nextRound.RealTimeMinersInformation[publicKey].ProducedBlocks.Add(1);
             Context.LogDebug(() => $"Mined blocks: {nextRound.GetMinedBlocks()}");
@@ -163,7 +164,7 @@ namespace AElf.Contracts.Consensus.AEDPoS
             };
         }
 
-        private AElfConsensusHeaderInformation GetInformationToUpdateConsensusForNextTerm(string publicKey,
+        private AElfConsensusHeaderInformation GetConsensusExtraDataForNextTerm(string publicKey,
             AElfConsensusTriggerInformation triggerInformation)
         {
             var firstRoundOfNextTerm = GenerateFirstRoundOfNextTerm(publicKey, State.MiningInterval.Value);
