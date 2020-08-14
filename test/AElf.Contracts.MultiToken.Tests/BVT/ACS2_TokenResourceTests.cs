@@ -1,8 +1,5 @@
 using System.Threading.Tasks;
 using Acs2;
-using AElf.ContractTestKit;
-using AElf.Types;
-using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Shouldly;
 using Xunit;
@@ -75,16 +72,7 @@ namespace AElf.Contracts.MultiToken
             var result = await Acs2BaseStub.GetResourceInfo.CallAsync(transaction);
             result.ShouldBe(new ResourceInfo {NonParallelizable = true});
         }
-
-        private Transaction GenerateTokenTransaction(Address from, string method, IMessage input)
-        {
-            return new Transaction
-            {
-                From = from,
-                To = TokenContractAddress,
-                MethodName = method,
-                Params = ByteString.CopyFrom(input.ToByteArray())
-            };           
-        }
+        
+       
     }
 }
