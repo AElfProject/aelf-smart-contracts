@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AElf.CSharp.Core;
 using AElf.Kernel;
 using AElf.Standards.ACS4;
-using AElf.TestBase;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;

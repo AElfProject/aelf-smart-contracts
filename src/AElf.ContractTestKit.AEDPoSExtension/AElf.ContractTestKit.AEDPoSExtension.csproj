@@ -11,8 +11,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AElf.ContractTestKit\AElf.ContractTestKit.csproj" />
-        <ProjectReference Include="..\AElf.EconomicSystem\AElf.EconomicSystem.csproj" />
-        <ProjectReference Include="..\AElf.GovernmentSystem\AElf.GovernmentSystem.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -49,8 +47,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
-        <PackageReference Include="xunit.extensibility.execution" Version="2.4.1" />
+        <PackageReference Include="AElf.GovernmentSystem" />
+        <PackageReference Include="AElf.EconomicSystem" />
+        <PackageReference Include="xunit.extensibility.core" />
+        <PackageReference Include="xunit.extensibility.execution" />
     </ItemGroup>
 
     <Import Project="..\..\test\AllContracts.props" />

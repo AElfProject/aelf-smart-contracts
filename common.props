@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <PackageProjectUrl>https://aelf.io</PackageProjectUrl>
+    <Version>$(VersionSuffix)</Version>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/AElfProject/AElf/</RepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+</Project>

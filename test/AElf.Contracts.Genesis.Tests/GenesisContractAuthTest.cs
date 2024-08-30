@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AElf.Contracts.Association;
 using AElf.Contracts.Parliament;
+using AElf.ContractTestKit;
 using AElf.CSharp.Core.Extension;
 using AElf.Kernel;
 using AElf.Kernel.CodeCheck.Infrastructure;

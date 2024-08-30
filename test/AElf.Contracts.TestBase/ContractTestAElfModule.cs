@@ -1,13 +1,17 @@
 using System.Threading.Tasks;
+using AElf.ContractTestBase.ContractTestKit;
 using AElf.CrossChain;
 using AElf.Cryptography;
 using AElf.Kernel;
 using AElf.Kernel.Account.Application;
+using AElf.Kernel.ChainController.Application;
 using AElf.Kernel.Consensus.Application;
 using AElf.Kernel.Proposal;
 using AElf.Kernel.SmartContract;
 using AElf.Kernel.SmartContract.Application;
 using AElf.Kernel.SmartContract.Infrastructure;
+using AElf.Kernel.SmartContractExecution.Application;
+using AElf.Kernel.TransactionPool.Infrastructure;
 using AElf.Modularity;
 using AElf.OS;
 using AElf.OS.Network.Application;
@@ -18,14 +22,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Volo.Abp.Modularity;
-using UnitTestContractZeroCodeProvider = AElf.Kernel.UnitTestContractZeroCodeProvider;
+using ContractDeployedLogEventProcessor = AElf.Kernel.CodeCheck.ContractDeployedLogEventProcessor;
 
 namespace AElf.Contracts.TestBase;
 
 [DependsOn(
     typeof(CSharpRuntimeAElfModule),
     typeof(CoreOSAElfModule),
-    typeof(KernelTestAElfModule)
+    typeof(KernelAElfModule)
 )]
 public class ContractTestAElfModule : AElfModule
 {
@@ -68,5 +72,22 @@ public class ContractTestAElfModule : AElfModule
             .AddSingleton<ISmartContractAddressNameProvider, ParliamentSmartContractAddressNameProvider>();
         context.Services
             .AddSingleton<ISmartContractAddressNameProvider, CrossChainSmartContractAddressNameProvider>();
+        context.Services.AddTransient<BasicTransactionValidationProvider>();
+        services.AddTransient<ChainCreationService>();
+        context.Services.Replace(ServiceDescriptor
+            .Singleton<ITransactionExecutingService, PlainTransactionExecutingService>());
+        services.AddSingleton<SmartContractRunnerContainer>();
+        services.AddSingleton<IDefaultContractZeroCodeProvider, UnitTestContractZeroCodeProvider>();
+
+        Configure<HostSmartContractBridgeContextOptions>(options =>
+        {
+            options.ContextVariables[ContextVariableDictionary.NativeSymbolName] = "ELF";
+            options.ContextVariables["SymbolListToPayTxFee"] = "WRITE,STO,READ,NET";
+        });
+        
+        context.Services.AddSingleton<ContractDeployedLogEventProcessor>();
+        context.Services.AddSingleton<CodeUpdatedLogEventProcessor>();
+        context.Services.Replace(ServiceDescriptor
+            .Singleton<ITransactionExecutingService, PlainTransactionExecutingService>());
     }
 }

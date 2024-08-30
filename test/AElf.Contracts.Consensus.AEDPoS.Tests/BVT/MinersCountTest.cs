@@ -6,7 +6,6 @@ using AElf.Contracts.Election;
 using AElf.CSharp.Core;
 using AElf.CSharp.Core.Extension;
 using AElf.Kernel;
-using AElf.TestBase;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;

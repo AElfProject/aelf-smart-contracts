@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using AElf.ContractTestKit;
 using AElf.Kernel;
 using AElf.Kernel.Token;
 using AElf.Standards.ACS0;
