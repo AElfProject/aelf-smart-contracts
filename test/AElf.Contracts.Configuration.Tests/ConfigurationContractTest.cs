@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using AElf.Contracts.Configuration;
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.Parliament;
-using AElf.ContractTestKit;
+using AElf.Kernel;
 using AElf.Kernel.CodeCheck;
 using AElf.Standards.ACS1;
 using AElf.Standards.ACS3;
@@ -370,7 +370,7 @@ public class ConfigurationContractTest : ConfigurationContractTestBase
                     }
                 });
             result.Status.ShouldBe(TransactionResultStatus.Failed);
-            result.Error.Contains($"Token {tokenSymbol} cannot set as method fee.").ShouldBeTrue();
+            result.Error.ShouldContain($"Token {tokenSymbol} cannot set as method fee.");
         }
 
         // unauthorized

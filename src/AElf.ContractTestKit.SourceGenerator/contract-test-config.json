@@ -1,0 +1,21 @@
+{
+  "DeploySystemContractList": [
+    "Association",
+    "Configuration",
+    "Consensus.AEDPoS",
+    "CrossChain",
+    "Economic",
+    "Election",
+    "MultiToken",
+    "Parliament",
+    "Profit",
+    "Referendum",
+    "TokenConverter",
+    "TokenHolder",
+    "Treasury",
+    "Vote"
+  ],
+  "DeployUserContractList": [
+    "AElf.Contracts.TestContract"
+  ]
+}

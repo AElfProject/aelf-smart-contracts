@@ -16,6 +16,7 @@ using AElf.Standards.ACS3;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Shouldly;
 using Volo.Abp.Threading;
 
 namespace AElf.Contracts.ConfigurationContract.Tests;
@@ -172,49 +173,58 @@ public class ConfigurationContractTestBase : ContractTestBase<ConfigurationContr
 
     protected async Task CreateTokenAsync(string symbol)
     {
-        await Tester.ExecuteContractWithMiningAsync(TokenContractAddress,
-            nameof(TokenContractContainer.TokenContractStub.Create),
-            new CreateInput
-            {
-                Symbol = "SEED-0",
-                Decimals = 0,
-                IsBurnable = true,
-                TokenName = "seed Collection",
-                TotalSupply = 1,
-                Issuer = Tester.GetCallOwnerAddress(),
-                ExternalInfo = new ExternalInfo(),
-                Owner = Tester.GetCallOwnerAddress()
-            });
-        await Tester.ExecuteContractWithMiningAsync(TokenContractAddress,
-            nameof(TokenContractContainer.TokenContractStub.Create),
-            new CreateInput
-            {
-                Symbol = "SEED-1",
-                Decimals = 0,
-                IsBurnable = true,
-                TokenName = "seed",
-                TotalSupply = 1,
-                Issuer = Tester.GetCallOwnerAddress(),
-                ExternalInfo = new ExternalInfo
+        {
+            var result = await Tester.ExecuteContractWithMiningAsync(TokenContractAddress,
+                nameof(TokenContractContainer.TokenContractStub.Create),
+                new CreateInput
                 {
-                    Value =
+                    Symbol = "SEED-0",
+                    Decimals = 0,
+                    IsBurnable = true,
+                    TokenName = "seed Collection",
+                    TotalSupply = 1,
+                    Issuer = Tester.GetCallOwnerAddress(),
+                    ExternalInfo = new ExternalInfo(),
+                    Owner = Tester.GetCallOwnerAddress()
+                });
+            result.Status.ShouldBe(TransactionResultStatus.Mined);
+        }
+        {
+            var result = await Tester.ExecuteContractWithMiningAsync(TokenContractAddress,
+                nameof(TokenContractContainer.TokenContractStub.Create),
+                new CreateInput
+                {
+                    Symbol = "SEED-1",
+                    Decimals = 0,
+                    IsBurnable = true,
+                    TokenName = "seed",
+                    TotalSupply = 1,
+                    Issuer = Tester.GetCallOwnerAddress(),
+                    ExternalInfo = new ExternalInfo
                     {
-                        { "__seed_owned_symbol", symbol },
-                        { "__seed_exp_time", TimestampHelper.GetUtcNow().AddDays(1).Seconds.ToString() }
-                    }
-                },
-                LockWhiteList = { TokenContractAddress },
-                Owner = Tester.GetCallOwnerAddress()
-            });
+                        Value =
+                        {
+                            { "__seed_owned_symbol", symbol },
+                            { "__seed_exp_time", TimestampHelper.GetUtcNow().AddDays(1).Seconds.ToString() }
+                        }
+                    },
+                    LockWhiteList = { TokenContractAddress },
+                    Owner = Tester.GetCallOwnerAddress()
+                });
+            result.Error.ShouldBeEmpty();
+        }
 
-        await Tester.ExecuteContractWithMiningAsync(TokenContractAddress,
-            nameof(TokenContractContainer.TokenContractStub.Issue),
-            new IssueInput
-            {
-                Symbol = "SEED-1",
-                Amount = 1,
-                To = Tester.GetCallOwnerAddress(),
-                Memo = "test"
-            });
+        {
+            var result = await Tester.ExecuteContractWithMiningAsync(TokenContractAddress,
+                nameof(TokenContractContainer.TokenContractStub.Issue),
+                new IssueInput
+                {
+                    Symbol = "SEED-1",
+                    Amount = 1,
+                    To = Tester.GetCallOwnerAddress(),
+                    Memo = "test"
+                });
+            result.Status.ShouldBe(TransactionResultStatus.Mined);
+        }
     }
 }

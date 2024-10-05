@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AElf.Contracts.Profit;
 using AElf.ContractTestKit.AEDPoSExtension;
 using AElf.CSharp.Core;
+using AElf.TestBase;
 using AElf.Types;
 using Google.Protobuf.WellKnownTypes;
 using Shouldly;

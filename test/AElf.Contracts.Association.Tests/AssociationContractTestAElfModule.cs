@@ -4,7 +4,6 @@ using AElf.ContractDeployer;
 using AElf.ContractTestBase;
 using AElf.ContractTestBase.ContractTestKit;
 using AElf.GovernmentSystem;
-using AElf.Kernel;
 using AElf.Kernel.Consensus.AEDPoS;
 using AElf.Kernel.SmartContract;
 using AElf.Kernel.SmartContract.Application;
@@ -45,17 +44,5 @@ public class AssociationContractTestAElfModule : AbpModule
     {
         var contractCodeProvider = context.ServiceProvider.GetService<IContractCodeProvider>();
         contractCodeProvider.Codes = ContractsDeployer.GetContractCodes<AssociationContractTestAElfModule>();
-    }
-}
-
-[DependsOn(typeof(ContractTestModule), typeof(AEDPoSAElfModule),
-    typeof(TokenKernelAElfModule),
-    typeof(GovernmentSystemAElfModule))]
-public class AssociationContractTestAElfModuleWithSpecificChainId : AssociationContractTestAElfModule
-{
-    public override void ConfigureServices(ServiceConfigurationContext context)
-    {
-        base.ConfigureServices(context);
-        Configure<ChainOptions>(options => options.ChainId = 1);
     }
 }

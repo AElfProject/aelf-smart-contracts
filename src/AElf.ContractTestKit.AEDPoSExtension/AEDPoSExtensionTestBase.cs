@@ -57,7 +57,9 @@ public class AEDPoSExtensionTestBase : ContractTestBase<ContractTestAEDPoSExtens
     protected async Task<Dictionary<Hash, Address>> DeploySystemSmartContracts(
         IEnumerable<Hash> systemContractNames)
     {
-        return await BlockMiningService.DeploySystemContractsAsync(systemContractNames.ToDictionary(n => n,
-            n => Codes.Single(c => c.Key.Contains(_systemContractKeyWords[n])).Value));
+        var uniqueSystemContractNames = systemContractNames.Distinct().ToList();
+
+        return await BlockMiningService.DeploySystemContractsAsync(uniqueSystemContractNames.ToDictionary(n => n,
+            n => Codes.First(c => c.Key.Contains(_systemContractKeyWords[n])).Value));
     }
 }

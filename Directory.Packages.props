@@ -3,6 +3,14 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerator.Testing" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerator.Testing.MSTest" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerator.Testing.XUnit" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     <PackageVersion Include="AElf.Kernel.Token" Version="1.10.0" />
     <PackageVersion Include="AElf.Runtime.CSharp.ExecutiveTokenPlugin" Version="1.10.0" />
     <PackageVersion Include="AElf.Kernel.Consensus.AEDPoS" Version="1.10.0" />
@@ -26,6 +34,7 @@
     <PackageVersion Include="AElf.Kernel.Core" Version="1.10.0" />
     <PackageVersion Include="AElf.Kernel" Version="1.10.0" />
     <PackageVersion Include="AElf.Sdk.CSharp" Version="1.10.0" />
+    <PackageVersion Include="AElf.Kernel.Types" Version="1.10.0" />
     <PackageVersion Include="AElf.Types" Version="1.10.0" />
     <PackageVersion Include="AElf.Tools" Version="1.0.3" />
     <PackageVersion Include="Nethereum.KeyStore" Version="4.21.4" />

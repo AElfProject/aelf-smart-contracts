@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Target Name="CreateContractTestConfig" AfterTargets="Build">
+        <ItemGroup>
+            <GeneratedConfigFile Include="$(MSBuildProjectDirectory)\contract-test-config.json" />
+        </ItemGroup>
+        <WriteLinesToFile
+                File="$(MSBuildProjectDirectory)\contract-test-config.json"
+                Lines="{}"
+                Overwrite="false"
+                Condition="!Exists('$(MSBuildProjectDirectory)\contract-test-config.json')" />
+    </Target>
+
+</Project>

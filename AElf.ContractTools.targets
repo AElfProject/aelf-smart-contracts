@@ -91,4 +91,24 @@
         </Exec>
         <Message Text="$(PatchContractCodeOutput)"/>
     </Target>
+    <!-- Move dlls before codecov injection in travis -->
+    <Target Name="CopyNonCodeCovContractDll" Condition="'$(IsContract)' != '' AND '$(IsContract)'" AfterTargets="PatchContractCode">
+        <PropertyGroup>
+            <LauncherTargetDir>../../src/AElf.Launcher/contracts</LauncherTargetDir>
+        </PropertyGroup>
+        <Copy SourceFiles="$(TargetDir)$(TargetName).dll"
+              DestinationFolder="$(LauncherTargetDir)"
+              SkipUnchangedFiles="true"/>
+        <Copy Condition="Exists('$(TargetDir)$(TargetName).dll.patched')"
+              SourceFiles="$(TargetDir)$(TargetName).dll.patched"
+              DestinationFolder="../../test/patched"
+              SkipUnchangedFiles="true"/>
+    </Target>
+    <!-- Copy patched contract dll after publish to include in publish directory -->
+    <Target Name="CopyPatchedContractCodeToPublish" AfterTargets="Publish">
+        <Copy Condition="'$(IsContract)' != '' AND '$(IsContract)' AND Exists('$(TargetDir)$(TargetName).dll.patched')"
+              SourceFiles="$(TargetDir)$(TargetName).dll.patched"
+              DestinationFiles="$(PublishDir)/$(TargetName).dll"
+              SkipUnchangedFiles="true"/>
+    </Target>
 </Project>

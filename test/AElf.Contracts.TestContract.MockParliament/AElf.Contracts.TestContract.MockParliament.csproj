@@ -21,7 +21,6 @@
         <ContractCode Include="..\..\protobuf\test_mock_parliament_contract.proto">
             <Link>Protobuf\Proto\test_mock_parliament_contract.proto</Link>
         </ContractCode>
-
     </ItemGroup>
 
     <ItemGroup>

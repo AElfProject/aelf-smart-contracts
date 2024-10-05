@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="AElf.ContractTestKit.SourceGenerator.targets">
+            <Pack>True</Pack>
+            <PackagePath>build\AElf.ContractTestKit.SourceGenerator.targets</PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\contract\AElf.Contracts.Association\bin\Debug\net8.0\AElf.Contracts.Association.dll" />
+        <EmbeddedResource Include="..\..\contract\AElf.Contracts.Configuration\bin\Debug\net8.0\AElf.Contracts.Configuration.dll" />
+    </ItemGroup>
+
+</Project>

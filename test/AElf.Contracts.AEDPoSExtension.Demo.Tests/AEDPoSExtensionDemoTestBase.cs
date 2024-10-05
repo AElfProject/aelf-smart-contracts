@@ -77,6 +77,7 @@ public class AEDPoSExtensionDemoTestBase : AEDPoSExtensionTestBase
             AssociationSmartContractAddressNameProvider.Name,
             ReferendumSmartContractAddressNameProvider.Name,
             ConfigurationSmartContractAddressNameProvider.Name,
+            ConsensusSmartContractAddressNameProvider.Name
         }));
     }
 

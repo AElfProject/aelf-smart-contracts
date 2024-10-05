@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,8 +19,25 @@ public static class ContractsDeployer
 
         if (contractNames.Count == 0) throw new NoContractDllFoundInManifestException();
 
-        return contractNames.Select(n => (n, GetCode(n, contractDir, isPatched)))
-            .ToDictionary(x => x.Item1, x => x.Item2);
+        var contractCodes = new Dictionary<string, byte[]>();
+        foreach (var name in contractNames)
+        {
+            try
+            {
+                var code = GetCode(name, contractDir, isPatched);
+                contractCodes.TryAdd(name, code);
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine($"File not found: {ex.FileName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading contract {name}: {ex.Message}");
+            }
+        }
+
+        return contractCodes;
     }
 
     private static byte[] GetCode(string dllName, string contractDir, bool isPatched)
@@ -33,10 +51,10 @@ public static class ContractsDeployer
 
     private static IEnumerable<string> GetContractNames(Assembly assembly)
     {
-        var manifestName = "Contracts.manifest";
+        const string manifestName = "Contracts.manifest";
 
         var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(manifestName));
-        if (resourceName == default) return new string[0];
+        if (resourceName == default) return Array.Empty<string>();
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         using var reader = new StreamReader(stream);
