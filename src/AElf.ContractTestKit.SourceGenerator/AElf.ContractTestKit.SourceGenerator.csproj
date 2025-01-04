@@ -24,8 +24,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="..\..\contract\AElf.Contracts.Association\bin\Debug\net8.0\AElf.Contracts.Association.dll" />
-        <EmbeddedResource Include="..\..\contract\AElf.Contracts.Configuration\bin\Debug\net8.0\AElf.Contracts.Configuration.dll" />
+        <EmbeddedResource Include="..\..\contract\AElf.Contracts.Association\bin\$(Configuration)\$(TargetFramework)\AElf.Contracts.Association.dll" />
+        <EmbeddedResource Include="..\..\contract\AElf.Contracts.Configuration\bin\$(Configuration)\$(TargetFramework)\AElf.Contracts.Configuration.dll" />
     </ItemGroup>
 
 </Project>
